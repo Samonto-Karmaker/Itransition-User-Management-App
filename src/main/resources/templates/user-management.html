@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2>Admin Panel</h2>
+    <div class="toolbar mt-3">
+        <button class="btn btn-danger"><i class="fas fa-ban"></i> Block</button>
+        <button class="btn btn-primary"><i class="fas fa-unlock"></i> Unblock</button>
+        <button class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
+    </div>
+    <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+            <th><label for="selectAll"></label><input type="checkbox" id="selectAll"></th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Last Login Time</th>
+            <th>Registration Time</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td><label>
+                <input type="checkbox">
+            </label></td>
+            <td th:text="${user.id}">1</td>
+            <td th:text="${user.name}">John Doe</td>
+            <td th:text="${user.email}">john@example.com</td>
+            <td th:text="${user.lastLoginTime}">2024-07-15 10:00</td>
+            <td th:text="${user.registrationTime}">2024-07-01 14:00</td>
+            <td th:text="${user.isBlocked ? 'Blocked' : 'Active'}">Active</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const selectAll = document.getElementById("selectAll");
+        const checkboxes = document.querySelectorAll("input[type='checkbox']");
+
+        selectAll.addEventListener("change", () => {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+        });
+    });
+</script>
+</body>
+</html>
