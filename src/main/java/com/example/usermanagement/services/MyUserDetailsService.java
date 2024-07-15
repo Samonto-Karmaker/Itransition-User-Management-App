@@ -1,4 +1,4 @@
-package com.example.usermanagement.service;
+package com.example.usermanagement.services;
 
 import com.example.usermanagement.models.User;
 import com.example.usermanagement.repositories.UserRepository;
