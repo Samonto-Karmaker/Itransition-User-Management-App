@@ -33,9 +33,13 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private LocalDateTime lastLoginAt;
+
     public User() {
         isBlocked = false;
         createdAt = LocalDateTime.now();
+        lastLoginAt = LocalDateTime.now();
     }
 
     public User(String email, String name, String password) {
@@ -93,4 +97,11 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public LocalDateTime getLastLoginAt() {
+        return lastLoginAt;
+    }
+
+    public void setLastLoginAt(LocalDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
+    }
 }
