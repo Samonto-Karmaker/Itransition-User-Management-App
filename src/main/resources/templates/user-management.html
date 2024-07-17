@@ -13,6 +13,7 @@
         <button type="button" class="btn btn-danger" id="blockButton"><i class="fas fa-ban"></i> Block</button>
         <button type="button" class="btn btn-primary" id="unblockButton"><i class="fas fa-unlock"></i> Unblock</button>
         <button type="button" class="btn btn-danger" id="deleteButton"><i class="fas fa-trash"></i> Delete</button>
+        <button type="button" class="btn btn-primary" id="logoutButton">Log Out</button>
     </div>
     <table class="table table-striped mt-3">
         <thead>
@@ -48,6 +49,7 @@
         const blockButton = document.getElementById("blockButton");
         const unblockButton = document.getElementById("unblockButton");
         const deleteButton = document.getElementById("deleteButton");
+        const logoutButton = document.getElementById("logoutButton");
         const jwt = localStorage.getItem("token");
 
         selectAll.addEventListener("change", () => {
@@ -87,6 +89,11 @@
             })
             deleteButton.addEventListener("click", () => {
                 sendUserActionRequest(sendUserActionRequest(selectedUserIds, "/user/delete-users", "DELETE"));
+            })
+
+            logoutButton.addEventListener("click", () => {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
             })
         }
     });
