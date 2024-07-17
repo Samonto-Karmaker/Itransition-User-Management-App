@@ -10,10 +10,10 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="text-center mt-5">Login Form</h2>
-            <form th:action="@{/login}" method="post">
+            <form id="login-form">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter your email address" required>
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -24,9 +24,42 @@
             <p class="text-center mt-3">
                 Are you new user? <a href="/register">Register</a>
             </p>
-            <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+            <div class="error-message" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("login-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const jsonData = {
+                email: formData.get("email"),
+                password: formData.get("password")
+            };
+            try {
+                const response = await fetch("/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(jsonData)
+                })
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+                const result = (await response).json();
+                console.log(result);
+                localStorage.setItem("token", result.jwt);
+                window.location.href = "/user/admin-panel";
+            } catch (error) {
+                console.error('Error:', error);
+                const alert = document.querySelector(".error-message");
+                alert.textContent = error.message || "Login failed";
+                alert.classList.add("alert", "alert-danger");
+            }
+        });
+    })
+</script>
 </body>
 </html>

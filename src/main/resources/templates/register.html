@@ -4,27 +4,13 @@
     <meta charset="UTF-8">
     <title>Registration Page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const email = document.getElementById("email");
-
-            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-            email.addEventListener("input", () => {
-                if (!emailRegex.test(email.value)) {
-                    email.setCustomValidity("Invalid email address");
-                } else {
-                    email.setCustomValidity("");
-                }
-            });
-        })
-    </script>
 </head>
 <body>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="text-center mt-5">Registration Form</h2>
-            <form id="registration-form" th:action="@{/register}" method="post">
+            <form id="registration-form">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name" required>
@@ -42,9 +28,57 @@
             <p class="text-center mt-3">
                 Already have an account? <a href="/login">Log in</a>
             </p>
-            <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+            <div class="error-message" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const email = document.getElementById("email");
+        const registrationForm = document.getElementById("registration-form");
+
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        email.addEventListener("input", () => {
+            if (!emailRegex.test(email.value)) {
+                email.setCustomValidity("Invalid email address");
+            } else {
+                email.setCustomValidity("");
+            }
+        });
+
+        registrationForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const jsonData = {
+                email: formData.get("email"),
+                name: formData.get("name"),
+                password: formData.get("password")
+            };
+
+            try {
+                const response = await fetch("/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+
+                const result = await response.json();
+                localStorage.setItem("token", result.jwt);
+                window.location.href = "/user/admin-panel";
+            } catch (error) {
+                console.error('Error:', error);
+                const alert = document.querySelector(".error-message");
+                alert.textContent = error.message || "Registration failed";
+                alert.classList.add("alert", "alert-danger");
+            }
+        });
+    })
+</script>
 </body>
 </html>
