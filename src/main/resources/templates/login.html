@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
@@ -24,7 +24,7 @@
             <p class="text-center mt-3">
                 Are you new user? <a href="/register">Register</a>
             </p>
-            <div class="error-message" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+            <div class="error-message alert alert-danger" role="alert" style="display: none;"></div>
         </div>
     </div>
 </div>
@@ -56,7 +56,7 @@
                 console.error('Error:', error);
                 const alert = document.querySelector(".error-message");
                 alert.textContent = error.message || "Login failed";
-                alert.classList.add("alert", "alert-danger");
+                alert.style.display = 'block';
             }
         });
     })

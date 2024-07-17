@@ -10,9 +10,9 @@
 <div class="container">
     <h2>Admin Panel</h2>
     <div class="toolbar mt-3">
-        <button class="btn btn-danger"><i class="fas fa-ban"></i> Block</button>
-        <button class="btn btn-primary"><i class="fas fa-unlock"></i> Unblock</button>
-        <button class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
+        <button type="button" class="btn btn-danger" id="blockButton"><i class="fas fa-ban"></i> Block</button>
+        <button type="button" class="btn btn-primary" id="unblockButton"><i class="fas fa-unlock"></i> Unblock</button>
+        <button type="button" class="btn btn-danger" id="deleteButton"><i class="fas fa-trash"></i> Delete</button>
     </div>
     <table class="table table-striped mt-3">
         <thead>
@@ -29,14 +29,14 @@
         <tbody>
         <tr th:each="user : ${users}">
             <td><label>
-                <input type="checkbox">
+                <input type="checkbox" name="userIds" th:value="${user.getId()}">
             </label></td>
-            <td th:text="${user.id}">1</td>
-            <td th:text="${user.name}">John Doe</td>
-            <td th:text="${user.email}">john@example.com</td>
-            <td th:text="${user.lastLoginTime}">2024-07-15 10:00</td>
-            <td th:text="${user.registrationTime}">2024-07-01 14:00</td>
-            <td th:text="${user.isBlocked ? 'Blocked' : 'Active'}">Active</td>
+            <td th:text="${user.getId()}"></td>
+            <td th:text="${user.getName()}"></td>
+            <td th:text="${user.getEmail()}"></td>
+            <td th:text="${user.getLastLoginAt()}"></td>
+            <td th:text="${user.getCreatedAt()}"></td>
+            <td th:text="${user.isBlocked() ? 'Blocked' : 'Active'}"></td>
         </tr>
         </tbody>
     </table>
@@ -45,12 +45,50 @@
     document.addEventListener("DOMContentLoaded", () => {
         const selectAll = document.getElementById("selectAll");
         const checkboxes = document.querySelectorAll("input[type='checkbox']");
+        const blockButton = document.getElementById("blockButton");
+        const unblockButton = document.getElementById("unblockButton");
+        const deleteButton = document.getElementById("deleteButton");
+        const jwt = localStorage.getItem("token");
 
         selectAll.addEventListener("change", () => {
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAll.checked;
             });
         });
+
+        const selectedUserIds = Array.from(checkboxes)
+            .filter(checkboxes.checked)
+            .map(checkbox => checkbox.value);
+
+        const sendUserActionRequest = async (userIds, actionURL, method) => {
+            try {
+                const response = await fetch(actionURL, {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${jwt}`
+                    },
+                    body: JSON.stringify(userIds)
+                })
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+                window.location.reload();
+            } catch (error) {
+                console.error('Error:', error);
+                alert("Error performing action on users.");
+            }
+
+            blockButton.addEventListener("click", () => {
+                sendUserActionRequest(sendUserActionRequest(selectedUserIds, "/user/block-users", "PUT"));
+            })
+            unblockButton.addEventListener("click", () => {
+                sendUserActionRequest(sendUserActionRequest(selectedUserIds, "/user/unblock-users", "PUT"));
+            })
+            deleteButton.addEventListener("click", () => {
+                sendUserActionRequest(sendUserActionRequest(selectedUserIds, "/user/delete-users", "DELETE"));
+            })
+        }
     });
 </script>
 </body>

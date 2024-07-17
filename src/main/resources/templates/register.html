@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Registration Page</title>
@@ -28,7 +28,7 @@
             <p class="text-center mt-3">
                 Already have an account? <a href="/login">Log in</a>
             </p>
-            <div class="error-message" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+            <div class="error-message alert alert-danger" role="alert" style="display: none;"></div>
         </div>
     </div>
 </div>
@@ -72,10 +72,9 @@
                 localStorage.setItem("token", result.jwt);
                 window.location.href = "/user/admin-panel";
             } catch (error) {
-                console.error('Error:', error);
                 const alert = document.querySelector(".error-message");
                 alert.textContent = error.message || "Registration failed";
-                alert.classList.add("alert", "alert-danger");
+                alert.style.display = 'block';
             }
         });
     })
