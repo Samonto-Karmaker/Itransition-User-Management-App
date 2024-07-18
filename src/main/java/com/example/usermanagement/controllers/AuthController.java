@@ -5,12 +5,9 @@ import com.example.usermanagement.models.AuthResponse;
 import com.example.usermanagement.models.User;
 import com.example.usermanagement.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Objects;
 
 @Controller
 @RequestMapping("/")
@@ -18,6 +15,11 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    @GetMapping("/")
+    public String redirect() {
+        return "redirect:/login";
+    }
 
     @GetMapping("register")
     public String getRegisterPage() {
@@ -35,10 +37,10 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<AuthResponse> login(@RequestBody RequestEntity<AuthRequest> authRequest) throws Exception {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) throws Exception {
         return ResponseEntity.ok(
-                new AuthResponse(authService.login(
-                        Objects.requireNonNull(authRequest.getBody()).getEmail(), authRequest.getBody().getPassword())
+                new AuthResponse(
+                        authService.login(authRequest.getEmail(), authRequest.getPassword())
                 )
         );
 

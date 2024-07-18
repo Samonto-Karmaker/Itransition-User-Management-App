@@ -68,10 +68,18 @@
                     throw new Error(response.statusText);
                 }
 
+                console.log(response);
                 const result = await response.json();
-                localStorage.setItem("token", result.jwt);
-                window.location.href = "/user/admin-panel";
+                console.log(result);
+                if(result.jwt) {
+                    localStorage.setItem("token", result.jwt);
+                    console.log(localStorage.getItem("token"));
+                    window.location.href = "/users/admin-panel";
+                } else {
+                    throw new Error("JWT token is missing in the response");
+                }
             } catch (error) {
+                console.error('Error:', error);
                 const alert = document.querySelector(".error-message");
                 alert.textContent = error.message || "Registration failed";
                 alert.style.display = 'block';

@@ -52,6 +52,8 @@
         const logoutButton = document.getElementById("logoutButton");
         const jwt = localStorage.getItem("token");
 
+        console.log(`Bearer ${jwt}`);
+
         selectAll.addEventListener("change", () => {
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAll.checked;
@@ -59,7 +61,7 @@
         });
 
         const selectedUserIds = Array.from(checkboxes)
-            .filter(checkboxes.checked)
+            .filter(checkbox => checkbox.checked)
             .map(checkbox => checkbox.value);
 
         const sendUserActionRequest = async (userIds, actionURL, method) => {

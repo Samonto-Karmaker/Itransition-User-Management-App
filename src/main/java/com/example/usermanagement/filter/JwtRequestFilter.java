@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -33,6 +34,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String email = null;
         String jwt = null;
 
+        Collections.list(request.getHeaderNames()).forEach(headerName -> {
+            Collections.list(request.getHeaders(headerName)).forEach(headerValue -> {
+                System.out.println(headerName + ": " + headerValue);
+            });
+        });
+
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             try {
@@ -45,6 +52,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 System.out.println("Invalid JWT Token");
             }
         } else {
+            System.out.println(authorizationHeader);
             System.out.println("JWT Token does not begin with Bearer String");
         }
 
