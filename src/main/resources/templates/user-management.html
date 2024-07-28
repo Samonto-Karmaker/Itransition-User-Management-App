@@ -52,28 +52,31 @@
         const logoutButton = document.getElementById("logoutButton");
         const jwt = localStorage.getItem("token");
 
-        console.log(`Bearer ${jwt}`);
-
         selectAll.addEventListener("change", () => {
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAll.checked;
             });
         });
 
-        const selectedUserIds = Array.from(checkboxes)
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => checkbox.value);
+        const getSelectedUserIds = () => {
+            return Array.from(checkboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => Number(checkbox.value));
+        };
 
         const sendUserActionRequest = async (userIds, actionURL, method) => {
+            console.log(userIds);
             try {
-                const response = await fetch(actionURL, {
+                const options = {
                     method: method,
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${jwt}`
                     },
                     body: JSON.stringify(userIds)
-                })
+                };
+
+                const response = await fetch(actionURL, options);
                 if (!response.ok) {
                     throw new Error(response.statusText);
                 }
@@ -82,22 +85,27 @@
                 console.error('Error:', error);
                 alert("Error performing action on users.");
             }
+        };
 
-            blockButton.addEventListener("click", () => {
-                sendUserActionRequest(sendUserActionRequest(selectedUserIds, "/user/block-users", "PUT"));
-            })
-            unblockButton.addEventListener("click", () => {
-                sendUserActionRequest(sendUserActionRequest(selectedUserIds, "/user/unblock-users", "PUT"));
-            })
-            deleteButton.addEventListener("click", () => {
-                sendUserActionRequest(sendUserActionRequest(selectedUserIds, "/user/delete-users", "DELETE"));
-            })
+        blockButton.addEventListener("click", () => {
+            const selectedUserIds = getSelectedUserIds();
+            sendUserActionRequest(selectedUserIds, "/users/block-users", "PUT");
+        });
 
-            logoutButton.addEventListener("click", () => {
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-            })
-        }
+        unblockButton.addEventListener("click", () => {
+            const selectedUserIds = getSelectedUserIds();
+            sendUserActionRequest(selectedUserIds, "/users/unblock-users", "PUT");
+        });
+
+        deleteButton.addEventListener("click", () => {
+            const selectedUserIds = getSelectedUserIds();
+            sendUserActionRequest(selectedUserIds, "/users/delete-users", "DELETE");
+        });
+
+        logoutButton.addEventListener("click", () => {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+        });
     });
 </script>
 </body>

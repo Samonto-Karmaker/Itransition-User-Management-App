@@ -34,11 +34,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String email = null;
         String jwt = null;
 
-        Collections.list(request.getHeaderNames()).forEach(headerName -> {
-            Collections.list(request.getHeaders(headerName)).forEach(headerValue -> {
-                System.out.println(headerName + ": " + headerValue);
-            });
-        });
+//        Collections.list(request.getHeaderNames()).forEach(headerName -> {
+//            Collections.list(request.getHeaders(headerName)).forEach(headerValue -> {
+//                System.out.println(headerName + ": " + headerValue);
+//            });
+//        });
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);

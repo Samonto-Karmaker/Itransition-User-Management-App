@@ -33,8 +33,9 @@ public class UserController {
         return "redirect:/users/admin-panel";
     }
 
-    @DeleteMapping("delete-users")
+    @DeleteMapping("/delete-users")
     public String deleteUsers(@RequestBody List<Long> userIds) {
+        System.out.println("deleteUsers");
         if (userService.deleteUsers(userIds)) return "redirect:/login";
         return "redirect:/users/admin-panel";
     }

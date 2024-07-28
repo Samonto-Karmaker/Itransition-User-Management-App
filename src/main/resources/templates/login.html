@@ -30,6 +30,7 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+
         document.getElementById("login-form").addEventListener("submit", async (event) => {
             event.preventDefault();
             const formData = new FormData(event.target);
@@ -54,7 +55,7 @@
                 if(result.jwt) {
                     localStorage.setItem("token", result.jwt);
                     console.log(localStorage.getItem("token"));
-                    window.location.href = "/users/admin-panel";
+                    window.location.href = "/users/admin-panel"
                 } else {
                     throw new Error("JWT token is missing in the response");
                 }
